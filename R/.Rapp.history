@@ -1,0 +1,202 @@
+library(TreePar)
+?TreePar
+bdtypes.stt.lik
+? bdtypes.stt.lik
+set.seed(1)#
+lambda11<-15#
+lambda12<-3#
+lambda21<-1#
+lambda22<-3#
+death1<-4#
+death2<-4#
+sampprob1<-0.05#
+sampprob2<-0.05#
+l<-rbind(c(lambda11,lambda12),c(lambda21,lambda22))#
+d<-c(death1,death2)#
+s<-c(sampprob1,sampprob2)#
+n<-20#
+init<- -1     #
+#
+tree<-sim.bdtypes.stt.taxa(n,l,d,s,init)#
+# Calculate likelihood for lambda11=15,lambda12=lambda21=lambda22=mu1=mu2=2,gamma=0#
+bdtypes.stt.lik(par=c(2,2,2,2),phylo=tree,#
+fix=rbind(c(1,6,7,8),c(15,-5,0,0),c(1,1,1,1)),sampfrac=s,survival=0,posR=0)
+tree
+out<-try(optim(c(2,2,2,2),bdtypes.stt.lik,phylo=tree,fix=rbind(c(1,6,7,8),c(15,-5,0,0),c(1,1,1,1)),#
+sampfrac=s,survival=0,posR=0,control=list(maxit=10000)))
+library(TreePar)
+?getx
+?TreePar
+?bd.shifts.optim
+bd.shifts.optim
+?TreePar
+library(TreeSim)#
+p0m <- function(t,l,m){m*(1-exp(-(l-m)*t))/(l-m*exp(-(l-m)*t)) }#
+#
+time<-100#
+numbsim<-10000#
+l<-0.005#
+m<-0
+mrca<-TRUE#
+trees=sim.bd.age(time,numbsim,l,m,complete=FALSE,mrca=mrca)#
+ntips<-vector()#
+for (i in 1:length(trees)){#
+	if (class(trees[[i]])=="phylo"){#
+	ntips<-c(ntips,length(trees[[i]]$tip.label))}#
+	else {if (trees[[i]]==1) {ntips<-c(ntips,1)}}#
+}
+drop.tip
+library(ape)#
+library(geiger)#
+setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/TreeSim/R")#
+#setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/old/R")#
+filenames <- list.files(pattern="*.R")#
+for (i in filenames){source(i)}
+setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/TreeSim/R")#
+#setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/old/R")#
+filenames <- list.files(pattern="*.R")#
+for (i in filenames){source(i)}
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=TRUE,stochsampling=TRUE)
+out[[2]][2]-max(branching.times(out[[1]][[2]]))
+out[[1]][[2]]$root.edge
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=TRUE,stochsampling=TRUE)
+out[[2]][2]-max(branching.times(out[[1]][[2]]))
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=FALSE,stochsampling=TRUE)
+out[[2]][2]-max(branching.times(out[[1]][[2]]))
+out[[1]][[2]]$root.edge
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=FALSE,stochsampling=FALSE)#
+#
+out[[2]][2]-max(branching.times(out[[1]][[2]]))#
+out[[1]][[2]]$root.edge
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1))
+out[[1]][[2]]$root.edge
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=FALSE,stochsampling=FALSE)#
+#
+out[[2]][2]-max(branching.times(out[[1]][[2]]))#
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1))#
+out[[1]][[2]]$root.edge
+out[[1]][[2]]
+getx(out[[1]][[2]],sersampling=1)
+branching.times(out[[1]][[2]])
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1)[,1])
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=FALSE,stochsampling=FALSE)#
+#
+out[[2]][2]-max(branching.times(out[[1]][[2]]))#
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1)[,1])#
+out[[1]][[2]]$root.edge
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=FALSE,stochsampling=TRUE)#
+#
+out[[2]][2]-max(branching.times(out[[1]][[2]]))#
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1)[,1])#
+out[[1]][[2]]$root.edge
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=TRUE,stochsampling=TRUE)#
+#
+out[[2]][2]-max(branching.times(out[[1]][[2]]))#
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1)[,1])#
+out[[1]][[2]]$root.edge
+out<-sim.bd.taxa(10,5,2,1,0.7,complete=TRUE,stochsampling=FALSE)#
+#
+out[[2]][2]-max(branching.times(out[[1]][[2]]))#
+out[[2]][2]-max(getx(out[[1]][[2]],sersampling=1)[,1])#
+out[[1]][[2]]$root.edge
+sort(c(3,2,4))
+setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/TreeSim/R")#
+#setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/old/R")#
+filenames <- list.files(pattern="*.R")#
+for (i in filenames){source(i)}
+set.seed(1)#
+n<-10#
+lambda <- c(2,1,2)#
+mu <- c(1,0.5,1.5)#
+sampprob <-c(0.5,0.5,0.5)#
+times<-c(0,1,2)#
+numbsim<-2#
+trees<-lapply(rep(n,numbsim),sim.bdsky.stt,lambdasky=lambda,deathsky=mu,#
+timesky=times,sampprobsky=sampprob,rho=0,timestop=0)#
+#
+trees<-lapply(rep(100,10),sim.bdsky.stt,lambdasky=c(3,0.5,3,0.5,3),
+deathsky=c(0.5,0.5,0.5,0.5,0.5),sampprobsky=c(0.5,0.5,0.5,0.5,0.5),#
+timesky=c(0,1,2,3,4),trackinfecteds=TRUE,SIRS=TRUE,N=500,#
+omegasky=c(0,0.5,0.5,0.5,0))
+trees
+trees[[1]]
+trees[[1]][[1]]
+trees[[1]][[1]]$root.edge
+getx(trees[[1]][[1]])
+getx(trees[[1]][[1]],decreasing=TRUE)
+getx(trees[[1]][1],decreasing=TRUE)
+getx(trees[[1]][1])
+getx(trees[[1]][1],sampling=1)
+getx(trees[[1]][1],sersampling=1)
+getx(trees[[1]][[1]],sersampling=1)
+sort(getx(trees[[1]][1],sersampling=1),decreasing=TRUE)
+sort(getx(trees[[1]][[1]],sersampling=1),decreasing=TRUE)
+br[1]-br[2]
+br<-sort(getx(trees[[1]][[1]],sersampling=1),decreasing=TRUE)
+br[1]-br[2]
+trees[[1]][[1]]$root.edge
+set.seed(1)#
+lambda <- c(2,1,2)#
+mu <- c(1,0.5,1.5)#
+sampprob <-c(0.5,0.5,0.5)#
+times<-c(0,1,2)#
+numbsim<-2#
+trees<-lapply(rep(n,numbsim),sim.bdsky.stt,lambdasky=lambda,deathsky=mu,#
+timesky=times,sampprobsky=sampprob,rho=0,timestop=0)#
+#
+trees<-lapply(rep(100,10),sim.bdsky.stt,lambdasky=c(3,0.5,3,0.5,3),#
+deathsky=c(0.5,0.5,0.5,0.5,0.5),sampprobsky=c(0.5,0.5,0.5,0.5,0.5),#
+timesky=c(0,1,2,3,4),trackinfecteds=TRUE,SIRS=TRUE,N=500,#
+omegasky=c(0,0.5,0.5,0.5,0))#
+#
+br<-sort(getx(trees[[1]][[1]],sersampling=1),decreasing=TRUE)#
+br[1]-br[2]#
+trees[[1]][[1]]$root.edge
+setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/TreeSim/R")#
+#setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/old/R")#
+filenames <- list.files(pattern="*.R")#
+for (i in filenames){source(i)}
+set.seed(1)#
+lambda <- c(2,1,2)#
+mu <- c(1,0.5,1.5)#
+sampprob <-c(0.5,0.5,0.5)#
+times<-c(0,1,2)#
+numbsim<-2#
+trees<-lapply(rep(n,numbsim),sim.bdsky.stt,lambdasky=lambda,deathsky=mu,#
+timesky=times,sampprobsky=sampprob,rho=0,timestop=0)#
+#
+trees<-lapply(rep(100,10),sim.bdsky.stt,lambdasky=c(3,0.5,3,0.5,3),#
+deathsky=c(0.5,0.5,0.5,0.5,0.5),sampprobsky=c(0.5,0.5,0.5,0.5,0.5),#
+timesky=c(0,1,2,3,4),trackinfecteds=TRUE,SIRS=TRUE,N=500,#
+omegasky=c(0,0.5,0.5,0.5,0))
+trees[[1]][[1]]$root.edge
+trees[[1]][[1]]
+trees[[1]][[1]]$root.edge
+setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/TreeSim/R")#
+#setwd("/Users/tstadler/Documents/Data/Uni/Research/R/TreeSimProject/old/R")#
+filenames <- list.files(pattern="*.R")#
+for (i in filenames){source(i)}
+set.seed(1)#
+n<-10#
+lambda <- rbind(c(2,1),c(3,4))#
+mu <- c(1,1)#
+sampprob <-c(0.5,0.5)#
+numbsim<-2#
+trees<-lapply(rep(n,numbsim),sim.bdtypes.stt.taxa,#
+lambdavector=lambda,deathvector=mu,sampprobvector=sampprob)
+trees
+trees[[1]]$root.edge
+library(TreeSimGM)
+library(TreeSimGM)
+?TreeSimGM
+?sim.age
+?sim.taxa
+?sim.taxa
+?gamstat
+?gamtat
+?gamStat
+gamStat
+library(apTreeshape)
+library(apTreeShape)
+library(laser)
+gamStat
