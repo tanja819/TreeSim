@@ -162,6 +162,7 @@ recursive subroutine tree_climb(n, n_events, leaves, changes, changer, nodes, ti
           call random_number(rands)
           trait = trait + sigma * sqrt(-2.0*(sumtime + t_el(ws) - time_in)*&
             log(rands(1)))*cos(2.0*pi*rands(2))
+          sumtime = 0.0
           samples(place, ws) = trait
           time_in = t_el(ws)
           ws = ws + 1
