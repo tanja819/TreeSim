@@ -76,7 +76,7 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
     else
       n.samples = 1
   }
-
+  
   ## Still old version
   if (traits)
   {
@@ -92,30 +92,50 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
   # phylo form, using a recursive function to calculate edges between nodes
   # also carries along trait information along edges, as well as at sampled points
   # parameters come from main function and remain unchanged unless comments say otherwise
-  test = .Fortran('tree_climb', 
-                  n = as.integer(maxleaf), 
-                  n_events = as.integer(n.events), 
-                  leaves = as.integer(leaves), 
-                  changes = as.integer(changes), 
-                  changer = as.integer(changer), 
-                  nodes = as.integer(nodes), 
-                  times = as.double(times), 
-                  time = 1L, # internal parameter used in recursive function, tracks which event function is on
-                  a = 1L, # internal parameter used in recursive function, tracks which edge function is tracking
-                  edge = matrix(0L, n.edge, 2), # outputs phylo edge matrix
-                  edge_length = numeric(n.edge), # outputs phylo edge length
-                  edge_trait = numeric(n.edge), # outputs trait at end of each edge
-                  n_samples = as.integer(n.samples), 
-                  se = as.integer(sample.events),
-                  n_leaves = as.integer(n.leaves),
-                  ml = as.integer(max.leaves),
-                  t_el = as.double(t.el),
-                  samples = matrix(as.double(0.0), max.leaves, n.samples), # outputs max.leaves x n.samples matrix of traits taken at sampleTimes (padded with zeros)
-                  trait = 0.0, # initial value of trait, also used internally to track trait value (can change but could just add a number to trait)
-                  sigma = as.double(sigma),
-                  ws = 1L, # internal parameter used in recursive function, tracks which sample we're up to
-                  traits = traits # whether to bother with traits
-  )
+  repeats = 0
+  while (repeats <= traits) # while we haven't run fast.tree enough times to populate all trait runs yet
+  {
+
+    test = .Fortran('tree_climb', 
+                    n = as.integer(maxleaf), 
+                    n_events = as.integer(n.events), 
+                    leaves = as.integer(leaves), 
+                    changes = as.integer(changes), 
+                    changer = as.integer(changer), 
+                    nodes = as.integer(nodes), 
+                    times = as.double(times), 
+                    time = 1L, # internal parameter used in recursive function, tracks which event function is on
+                    a = 1L, # internal parameter used in recursive function, tracks which edge function is tracking
+                    edge = matrix(0L, n.edge, 2), # outputs phylo edge matrix
+                    edge_length = numeric(n.edge), # outputs phylo edge length
+                    edge_trait = numeric(n.edge), # outputs trait at end of each edge
+                    n_samples = as.integer(n.samples), 
+                    se = as.integer(sample.events),
+                    n_leaves = as.integer(n.leaves),
+                    ml = as.integer(max.leaves),
+                    t_el = as.double(t.el),
+                    samples = matrix(as.double(0.0), max.leaves, n.samples), # outputs max.leaves x n.samples matrix of traits taken at sampleTimes (padded with zeros)
+                    trait = 0.0, # initial value of trait, also used internally to track trait value (can change but could just add a number to trait)
+                    sigma = as.double(sigma),
+                    ws = 1L, # internal parameter used in recursive function, tracks which sample we're up to
+                    traits = (traits > 0) # whether to bother with traits
+    )
+
+    if (repeats < 0) # if first time round
+    {
+      repeats = 2
+      if (traits) # if bothering with traits, build and populate the first trait
+      {
+        samples = array(0, c(traits, nrow(test$samples), ncol(test$samples)))
+        samples[1,,] = test$samples
+      }
+    }
+    else # subsequent trait replicates
+    {
+      samples[repeats,,] = test$samples
+      repeats = repeats + 1
+    }
+  }
   
   if (length(test$edge_length) == 0) recover()
   
@@ -129,7 +149,7 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
   
   class(res) = 'phylo'
   
-  # return tree and extra outputs if traits = TRUE
+  # return tree and extra outputs if traits > 0
   if (!traits)
   {
     res<-collapse.singles(res)
@@ -139,7 +159,7 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
   }
   else
     list(tree = res,  # output tree
-         samples = test$samples, # max.leaves x n.samples matrix of traits taken at sampleTimes (padded with zeros)
+         samples = samples, # traits x max.leaves x n.samples matrix of trait replicates taken at sampleTimes (padded with zeros)
          n.leaves = n.leaves, # number of leaves at each of the sample points
          sampleTimes = sampleTimes2) # times of each sample
 }

@@ -14,7 +14,7 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
   \item{lambda}{Speciation rate.}
   \item{mu}{Extinction rate.}
   \item{frac}{For use with incomplete sampling (see sim.bd.taxa). The actual number of tips is n/frac.}
-  \item{traits}{When set to TRUE, enables character tracking and sampling.}
+  \item{traits}{When greater than zero, enables character tracking and sampling for the specified number of independent traits on the same tree.}
   \item{sigma}{The standard deviation of the Brownian motion of the character over time.}
   \item{sampleTimes}{A vector of times at which to sample, expressed as a proportion of the overall tree length (in time).}
 }
@@ -26,7 +26,7 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
   
   If traits = TRUE, a list with items:
   \item{tree}{The simulated tree with n/frac extant tips.}
-  \item{samples}{A max.leaves x n.samples matrix of characters taken at sampleTimes (padded with zeros), where max.leaves is the maximum number of leaves at a sampled time and n.samples is the length of vector sampleTimes.}
+  \item{samples}{A traits x max.leaves x n.samples matrix of characters taken at sampleTimes (padded with zeros), where traits is the number of independent traits, max.leaves is the maximum number of leaves at a sampled time and n.samples is the length of vector sampleTimes.}
   \item{n.leaves}{The number of leaves extant at each of the sampled times.}
   \item{sampleTimes}{The vector of sampled times (no longer expressed as a proportion).}
 }
