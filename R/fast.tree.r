@@ -121,7 +121,7 @@ fast.tree = function(n, lambda, mu, frac = 1, traits = FALSE, sigma = 1, sampleT
                     traits = (traits > 0) # whether to bother with traits
     )
 
-    if (repeats < 0) # if first time round
+    if (repeats <= 0) # if first time round
     {
       repeats = 2
       if (traits) # if bothering with traits, build and populate the first trait
